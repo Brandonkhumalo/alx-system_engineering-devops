@@ -1,2 +1,2 @@
 #!/bin/bash
-n=0; while read l; do ((n++%2)) || echo "$l"; done
+n=0; while read line do if [ $((n % 2)) -eq 0 ] then echo "$line" fi n=$((n + 1)) done
