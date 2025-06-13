@@ -1,2 +1,2 @@
-export BINARY=10100111001
-./11-binary_to_decimal
+#!/bin/bash
+for a in {a..z};do for b in {a..z};do [[ $a$b == oo ]]||echo $a$b;done;done
