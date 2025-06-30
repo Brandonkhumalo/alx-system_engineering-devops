@@ -1,21 +1,21 @@
-# Ensure the SSH config file exists
-file { '/home/ubuntu/.ssh/config':
-  ensure  => file,
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  mode    => '0600',
+# Ensure the SSH client config file exists
+file { '/etc/ssh/ssh_config':
+  ensure => file,
+  owner  => 'root',
+  group  => 'root',
+  mode   => '0644',
 }
 
-# Add line to use private key
+# Add line to specify private key for authentication
 file_line { 'Declare identity file':
-  path  => '/home/ubuntu/.ssh/config',
-  line  => '  IdentityFile ~/.ssh/school',
-  match => '^ *IdentityFile',
+  path  => '/etc/ssh/ssh_config',
+  line  => 'IdentityFile ~/.ssh/school',
+  match => '^IdentityFile',
 }
 
 # Add line to disable password authentication
 file_line { 'Turn off passwd auth':
-  path  => '/home/ubuntu/.ssh/config',
-  line  => '  PasswordAuthentication no',
-  match => '^ *PasswordAuthentication',
+  path  => '/etc/ssh/ssh_config',
+  line  => 'PasswordAuthentication no',
+  match => '^PasswordAuthentication',
 }
