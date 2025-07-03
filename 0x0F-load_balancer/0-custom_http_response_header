@@ -1,23 +1,22 @@
 #!/usr/bin/env bash
-# Configures Nginx to add a custom HTTP header X-Served-By with the server's hostname
+# Installs Nginx and configures it to add a custom X-Served-By HTTP header with the hostname
 
-# Ignore SC2154 warning for hostname usage in shellcheck
-
-# Update package lists
+# Install Nginx if not already installed
 apt-get update -y
+apt-get install -y nginx
 
-# Install nginx if not installed
-if ! command -v nginx > /dev/null; then
-    apt-get install -y nginx
+# Get the hostname of the server
+hostname=$(hostname)
+
+# Create a backup of the default config if it doesn't already exist
+default_config="/etc/nginx/sites-available/default"
+backup_config="/etc/nginx/sites-available/default.bak"
+[ ! -f "$backup_config" ] && cp "$default_config" "$backup_config"
+
+# Insert the custom header into the server block if not already present
+if ! grep -q "add_header X-Served-By" "$default_config"; then
+    sed -i "/^\s*location \/ {/a \\tadd_header X-Served-By \"$hostname\";" "$default_config"
 fi
 
-# Get hostname
-server_hostname=$(hostname)
-
-# Configure custom header by adding it inside /etc/nginx/conf.d/custom_header.conf
-cat > /etc/nginx/conf.d/custom_header.conf <<EOF
-add_header X-Served-By "$server_hostname";
-EOF
-
-# Test nginx config and reload if OK
-nginx -t && service nginx reload
+# Restart Nginx to apply the changes
+service nginx restart
