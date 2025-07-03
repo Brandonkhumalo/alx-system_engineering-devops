@@ -11,4 +11,5 @@ SERVER_IP=$2
 USERNAME=$3
 SSH_KEY=$4
 
-scp -i "$ssh bff57259b463@bff57259b463.af077e84.alx-cod.online" -o StrictHostKeyChecking=no "$FILE" "$bff57259b463@$44.212.45.182:~/"
+scp -i "$SSH_KEY" -o StrictHostKeyChecking=no "$FILE" "$USERNAME@$SERVER_IP:~/"
+
