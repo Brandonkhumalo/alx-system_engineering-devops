@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
-# Installs Nginx and configures it to add a custom X-Served-By HTTP header with the hostname
+# This script installs nginx and configures it to add a custom HTTP header
+# X-Served-By with the hostname of the server responding
 
-# Install Nginx if not already installed
+# Update package list and install nginx
 apt-get update -y
 apt-get install -y nginx
 
-# Get the hostname of the server
-hostname=$(hostname)
+# Backup the default nginx config
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
-# Create a backup of the default config if it doesn't already exist
-default_config="/etc/nginx/sites-available/default"
-backup_config="/etc/nginx/sites-available/default.bak"
-[ ! -f "$backup_config" ] && cp "$default_config" "$backup_config"
+# Add the custom header in the server block of nginx config
+# Use 'hostname' command to get server hostname dynamically
+sed -i '/server_name _;/a \\n\tadd_header X-Served-By "$hostname";' /etc/nginx/sites-available/default
 
-# Insert the custom header into the server block if not already present
-if ! grep -q "add_header X-Served-By" "$default_config"; then
-    sed -i "/^\s*location \/ {/a \\tadd_header X-Served-By \"$hostname\";" "$default_config"
-fi
+# Replace $hostname with actual hostname in nginx config
+sed -i "s/\$hostname/$(hostname)/" /etc/nginx/sites-available/default
 
-# Restart Nginx to apply the changes
+# Restart nginx to apply changes
 service nginx restart
