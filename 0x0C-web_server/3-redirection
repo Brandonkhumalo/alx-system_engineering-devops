@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Installs nginx and configures /redirect_me with 301 permanent redirect
+
+apt-get update -y
+apt-get install -y nginx
+
+# Backup default config
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+
+# Replace the server block to add the redirect location
+cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+EOF
+
+# Restart nginx (without systemctl)
+service nginx restart
