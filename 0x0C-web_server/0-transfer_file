@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Transfers a file to a remote ALX server using SCP with preconfigured key
+# Transfers a file to a remote ALX server using SCP and password authentication
 
-if [ "$#" -lt 3 ]; then
-  echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME"
+if [ "$#" -lt 4 ]; then
+  echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PASSWORD"
   exit 1
 fi
 
 FILE=$1
 SERVER_IP=$2
 USERNAME=$3
+PASSWORD=$4
 
-scp -o StrictHostKeyChecking=no "$FILE" "$USERNAME@$SERVER_IP:~/"
+sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no "$FILE" "$USERNAME@$SERVER_IP:~/"
