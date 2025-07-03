@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Transfers a file to a remote ALX server using SCP and password authentication
+# Transfers a file to a remote ALX server using SCP with password authentication
 
 if [ "$#" -lt 4 ]; then
   echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PASSWORD"
