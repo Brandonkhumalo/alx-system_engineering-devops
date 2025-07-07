@@ -48,4 +48,4 @@ sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
 systemctl restart haproxy
 
 # Output success
-echo "web-01", "web-02"
+echo "web-01 web-02"
