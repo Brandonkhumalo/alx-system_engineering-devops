@@ -1,3 +1,4 @@
+
 #!/usr/bin/env bash
 # Transfers a file to a remote ALX server using SCP with password authentication
 
@@ -11,4 +12,11 @@ SERVER_IP=$2
 USERNAME=$3
 PASSWORD=$4
 
+# Check if file exists
+if [ ! -f "$FILE" ]; then
+  echo "Error: File '$FILE' not found!"
+  exit 1
+fi
+
+# Transfer file using sshpass and scp
 sshpass -p "$PASSWORD" scp -o StrictHostKeyChecking=no "$FILE" "$USERNAME@$SERVER_IP:~/"
