@@ -6,13 +6,14 @@ get_dns_info() {
     local domain=$1
     local sub=$2
     local full_domain="${sub}.${domain}"
-    
-    result=$(dig $full_domain +short)
-    if [ -n "$result" ]; then
-        record_type="A"
-        destination=$(echo "$result" | awk 'NR==1')
-        echo "The subdomain $sub is a $record_type record and points to $destination"
-    fi
+
+    # Use dig and extract from ANSWER SECTION
+    dig $full_domain | awk -v sub=$sub '
+    $1 == ";;" && $2 == "ANSWER" && $3 == "SECTION:" {getline; print_line=1; next}
+    print_line && NF >= 5 {
+        print "The subdomain " sub " is a " $4 " record and points to " $5
+        exit
+    }'
 }
 
 # Main execution
@@ -22,11 +23,11 @@ main() {
 
     if [ -z "$subdomain" ]; then
         for sub in www lb-01 web-01 web-02; do
-            get_dns_info $domain $sub
+            get_dns_info "$domain" "$sub"
         done
     else
-        get_dns_info $domain $subdomain
+        get_dns_info "$domain" "$subdomain"
     fi
 }
 
-main $@
+main "$@"
